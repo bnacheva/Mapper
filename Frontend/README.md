@@ -1,3 +1,3 @@
-# Backend
+# Frontend
 
-The backend part of the project is made with Spring Boot.
+The frontend part of the project will represent a mobile application built with Nativescript.
