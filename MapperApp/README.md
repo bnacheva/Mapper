@@ -1,2 +1,3 @@
-# Mapper
-A mobile application which introduces a location sharing map
+# Backend
+
+The backend part of the project is made with ```Spring Boot```.
