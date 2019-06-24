@@ -22,6 +22,7 @@ namespace WebApi.Controllers
 
         // GET: api/values
         [HttpGet]
+        [Route("~/api/group")]  
         public async Task<IActionResult> Get()
         {
             var groups = await _groupService.GetGroupsAsync();
@@ -31,6 +32,7 @@ namespace WebApi.Controllers
 
         // POST api/values
         [HttpPost]
+        [Route("~/api/group")]  
         public async void Post([FromBody]Group newGroup)
         {
             await _groupService.AddGroupAsync(newGroup);

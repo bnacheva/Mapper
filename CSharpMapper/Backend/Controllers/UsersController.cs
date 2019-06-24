@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace WebApi.Controllers
 {
     [Authorize]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UsersController : Controller
     {
         private IUserService _userService;
@@ -34,7 +34,8 @@ namespace WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost]
+        [Route("~/api/authenticate")]
         public IActionResult Authenticate([FromBody]UserDto userDto)
         {
             var user = _userService.Authenticate(userDto.Username, userDto.Password);
@@ -66,7 +67,8 @@ namespace WebApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost]
+        [Route("~/api/register")]
         public IActionResult Register([FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
@@ -82,7 +84,9 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpGet]     
+        [Route("~/api/getall")]  
         public IActionResult GetAll()
         {
             var users =  _userService.GetAll();
@@ -91,7 +95,8 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        [Route("~/api/getbyid/{id}")]  
+        public IActionResult GetById(Guid id)
         {
             var user =  _userService.GetById(id);
             var userDto = _mapper.Map<UserDto>(user);
@@ -99,7 +104,8 @@ namespace WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDto userDto)
+        [Route("~/api/update/{id}")]  
+        public IActionResult Update(Guid id, [FromBody]UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
             user.Id = id;
@@ -116,7 +122,8 @@ namespace WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        [Route("~/api/delete/{id}")]  
+        public IActionResult Delete(Guid id)
         {
             _userService.Delete(id);
             return Ok();
