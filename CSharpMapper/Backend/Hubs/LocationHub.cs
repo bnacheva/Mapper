@@ -20,23 +20,22 @@ namespace WebApi.Hubs
 
         public async Task SendLocationToAll(string name, string location)
         {
-            await Clients.All.SendAsync(name, location);
-            Console.WriteLine("Error");
+            await Clients.All.SendAsync("ReceiveLocationToAll", name, location);
         }
 
         public async Task SendLocationToOne(string name, string location)
         {
-            await Clients.Caller.SendAsync(name, location);
+            await Clients.Caller.SendAsync("ReceiveLocationToOne", name, location);
         }
 
         public async Task SendLocationToOthers(string name, string location)
         {
-            await Clients.Others.SendAsync(name, location);
+            await Clients.Others.SendAsync("ReceiveLocationToOthers", name, location);
         }
 
         public async Task SendLocationToGroup(string group, string name, string location) 
         {
-            await Clients.Group(group).SendAsync(name, location);
+            await Clients.Group(group).SendAsync("ReceiveLocationToGroup", name, location);
         }
 
         public async Task AddGroup(string groupName)
