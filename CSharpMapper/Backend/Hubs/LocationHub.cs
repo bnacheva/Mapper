@@ -13,43 +13,53 @@ namespace WebApi.Hubs
         private readonly IGroupService _groupService;
         public int UsersOnline;
 
-        public void SendLocationToAll(string name, string location)
-        {
-            Clients.All.SendAsync("sendLocationToAll", name, location);
-        }
-
-        public void SendLocationToGroup(string location) 
-        {
-            Clients.Group("SignalR Users").SendAsync("ReceiveLocation", location);
-        }
-
         public LocationHub(IGroupService groupService)
         {
             _groupService = groupService;
         }
 
+        public async Task SendLocationToAll(string name, string location)
+        {
+            await Clients.All.SendAsync(name, location);
+            Console.WriteLine("Error");
+        }
+
+        public async Task SendLocationToOne(string name, string location)
+        {
+            await Clients.Caller.SendAsync(name, location);
+        }
+
+        public async Task SendLocationToOthers(string name, string location)
+        {
+            await Clients.Others.SendAsync(name, location);
+        }
+
+        public async Task SendLocationToGroup(string group, string name, string location) 
+        {
+            await Clients.Group(group).SendAsync(name, location);
+        }
+
         public async Task AddGroup(string groupName)
         {
-            Group newGroup = new Group()
-            {
-                Name = groupName
-            };
+            Group newGroup = new Group(){ Name = groupName };
 
             await _groupService.AddGroupAsync(newGroup);
-            await Clients.All.SendAsync("NewGroup", groupName, newGroup.Id);
+            await Clients.All.SendAsync(groupName, newGroup.Id);
         }
 
         public override async Task OnConnectedAsync()
         {
             UsersOnline++;
-            await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+            //string group = "";
+            await Groups.AddToGroupAsync(Context.ConnectionId, "");
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             UsersOnline--;
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "SignalR Users");
+            //string group = "";
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "");
             await base.OnDisconnectedAsync(exception);
         }
     }

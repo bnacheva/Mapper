@@ -26,6 +26,12 @@ namespace WebApi.Services
 
         public async Task<bool> AddGroupAsync(Group newGroup)
         {
+            if (string.IsNullOrWhiteSpace(newGroup.Name))
+                throw new AppException("The group name is required!");
+
+            if (_context.Groups.Any(x => x.Name == newGroup.Name))
+                throw new AppException("Group name '" + newGroup.Name + "' is already taken");
+
             newGroup.Id = Guid.NewGuid();
 
             _context.Groups.Add(newGroup);
