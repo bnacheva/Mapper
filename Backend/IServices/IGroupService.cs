@@ -9,5 +9,6 @@ namespace WebApi.Services
     {
         Task<List<Group>> GetGroupsAsync();
         Task<bool> AddGroupAsync(Group newGroup);
+        void RemoveGroup(Guid id);
     }
 }

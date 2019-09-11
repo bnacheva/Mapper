@@ -33,14 +33,14 @@ namespace WebApi.Hubs
             await Clients.Others.SendAsync("ReceiveLocationToOthers", name, location);
         }
 
-        public async Task SendLocationToGroup(string group, string name, string location) 
+        public async Task SendLocationToGroup(string group, string name, string location)
         {
-            await Clients.Group(group).SendAsync("ReceiveLocationToGroup", name, location);
+            await Clients.OthersInGroup(group).SendAsync("ReceiveLocationToGroup", name, location);
         }
 
         public async Task AddGroup(string groupName)
         {
-            Group newGroup = new Group(){ Name = groupName };
+            Group newGroup = new Group() { Name = groupName };
 
             await _groupService.AddGroupAsync(newGroup);
             await Clients.All.SendAsync(groupName, newGroup.Id);
@@ -49,7 +49,6 @@ namespace WebApi.Hubs
         public override async Task OnConnectedAsync()
         {
             UsersOnline++;
-            //string group = "";
             await Groups.AddToGroupAsync(Context.ConnectionId, "");
             await base.OnConnectedAsync();
         }
@@ -57,9 +56,22 @@ namespace WebApi.Hubs
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             UsersOnline--;
-            //string group = "";
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, "");
             await base.OnDisconnectedAsync(exception);
+        }
+
+        public async Task AddToGroup(string group)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, group);
+
+            await Clients.Group(group).SendAsync("ReceiveLocationToGroup", $"{Context.ConnectionId} has joined the group {group}.");
+        }
+
+        public async Task RemoveFromGroup(string group)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, group);
+
+            await Clients.Group(group).SendAsync("ReceiveLocationToGroup", $"{Context.ConnectionId} has left the group {group}.");
         }
     }
 }

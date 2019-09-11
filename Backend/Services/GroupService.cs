@@ -26,11 +26,8 @@ namespace WebApi.Services
 
         public async Task<bool> AddGroupAsync(Group newGroup)
         {
-            if (string.IsNullOrWhiteSpace(newGroup.Name))
-                throw new AppException("The group name is required!");
-
             if (_context.Groups.Any(x => x.Name == newGroup.Name))
-                throw new AppException("Group name '" + newGroup.Name + "' is already taken");
+                throw new AppException("Group name '" + newGroup.Name + "' is already taken.");
 
             newGroup.Id = Guid.NewGuid();
 
@@ -39,6 +36,16 @@ namespace WebApi.Services
             var saveResults = await _context.SaveChangesAsync();
 
             return saveResults > 0;
+        }
+
+        public void RemoveGroup(Guid id)
+        {
+            var group = _context.Groups.Find(id);
+            if (group != null)
+            {
+                _context.Groups.Remove(group);
+                _context.SaveChanges();
+            }
         }
     }
 }

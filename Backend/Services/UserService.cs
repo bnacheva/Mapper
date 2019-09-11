@@ -44,10 +44,13 @@ namespace WebApi.Services
         public User Create(User user, string password)
         {
             if (string.IsNullOrWhiteSpace(password))
-                throw new AppException("Password is required");
+                throw new AppException("Password is required.");
+            
+            if (password.Length < 6 || password.Length > 30)
+                throw new AppException("Password should be at least 6 symbols long.");
 
             if (_context.Users.Any(x => x.Username == user.Username))
-                throw new AppException("Username '" + user.Username + "' is already taken");
+                throw new AppException("Username '" + user.Username + "' is already taken.");
 
             byte[] passwordHash, passwordSalt;
             CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -67,12 +70,12 @@ namespace WebApi.Services
             var user = _context.Users.Find(userParam.Id);
 
             if (user == null)
-                throw new AppException("User not found");
+                throw new AppException("User not found.");
 
             if (userParam.Username != user.Username)
             {
                 if (_context.Users.Any(x => x.Username == userParam.Username))
-                    throw new AppException("Username " + userParam.Username + " is already taken");
+                    throw new AppException("Username " + userParam.Username + " is already taken.");
             }
 
             user.FirstName = userParam.FirstName;

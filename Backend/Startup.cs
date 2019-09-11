@@ -29,8 +29,6 @@ namespace WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors();
-            //services.AddDbContext<DataContext>(x => x.UseInMemoryDatabase("TestDb"));
             services.AddEntityFrameworkSqlite().AddDbContext<DataContext>();
             services.AddMvc();
             services.AddAutoMapper();
@@ -78,12 +76,6 @@ namespace WebApi
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            /*app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials());*/
 
             app.UseCors("CorsPolicy");
 

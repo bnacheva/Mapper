@@ -37,5 +37,13 @@ namespace WebApi.Controllers
         {
             await _groupService.AddGroupAsync(newGroup);
         }
+
+        [HttpDelete("{id}")]
+        [Route("~/api/deletegroup/{id}")]  
+        public IActionResult Delete(Guid id)
+        {
+            _groupService.RemoveGroup(id);
+            return Ok();
+        }
     }
 }
